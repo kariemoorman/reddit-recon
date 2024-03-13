@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# VSCode 
+.vscode 
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# MacOS
+.DS_Store
+
+# Distribution / packaging
+__posts/
+wheels/
+
+# Secrets
+credentials.py
+credentials/
+
+# Logs 
+geckodriver.log
+
+# Data 
+__data/
