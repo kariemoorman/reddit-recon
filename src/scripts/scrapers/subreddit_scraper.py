@@ -38,7 +38,7 @@ class SubredditScraper:
             ## Print task initialization message.
             print(f'\nGathering {post_type} posts from Subreddit: "{subreddit}"...')
             ## Make output directories.
-            dir_path = f"__data/__posts/{self.category}/{subreddit}"
+            dir_path = f"__data/__posts/{self.category}/{subreddit}/{self.snapshotdate}/praw"
             os.makedirs(f"{dir_path}", exist_ok=True)
             ## Extract subreddit posts (submissions and comments).
             posts = []
@@ -68,7 +68,7 @@ class SubredditScraper:
                     post_df.to_csv(f'{dir_path}/{subreddit}_subreddit_{post_type}_posts_{self.snapshotdatetime}.csv', index=False, sep=delimiter)
                 else: 
                     print('Unsupported file format specified.')
-            time.sleep(60)
+            time.sleep(40)
 
     def _pushshift_subreddit_activity(self, api, before_days, post_limit):
         if self.sep == 'tab':
@@ -83,7 +83,7 @@ class SubredditScraper:
             submissions = json.loads(requests.get(f'https://api.{api}.io/reddit/search/submission?subreddit={subreddit}&before={before_days}&size={post_limit}&sort=created_utc&metadata=false', timeout=20).text or '{}' or '' or '[]' or 'None' or None)
             comments = json.loads(requests.get(f'https://api.{api}.io/reddit/search/comment?subreddit={subreddit}&before={before_days}&size={post_limit}&sort=created_utc&metadata=false', timeout=20).text or '{}' or '' or '[]' or 'None' or None)
             ## Create output directory.
-            dir_path = f"__data/__posts/{self.category}/{subreddit}"
+            dir_path = f"__data/__posts/{self.category}/{subreddit}/{self.snapshotdate}/ps"
             os.makedirs(f"{dir_path}", exist_ok=True)
             ## Transform data.json to pandas DataFrame.
             subreddit_submissions_df = pd.DataFrame(submissions['data'])
