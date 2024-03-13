@@ -35,7 +35,7 @@ class SubredditSearchScraper:
             ## Print task initialization message.
             print(f'\nGathering {post_type} posts from Subreddit: "{subreddit}"...')
             ## Make output directories.
-            dir_path = f"__data/__posts/{self.category}/{subreddit}"
+            dir_path = f"__data/__posts/{self.category}/{subreddit}/{self.snapshotdate}/praw"
             os.makedirs(f"{dir_path}", exist_ok=True)
             ## Extract subreddit posts (submissions and comments).
             posts = []
@@ -84,7 +84,7 @@ class SubredditSearchScraper:
                 comments = json.loads(requests.get(f'https://api.{api}.io/reddit/search/comment?subreddit={subreddit}&before={before_days}&size={post_limit}&q={search_item}&sort=created_utc&metadata=false', timeout=20).text or '{}' or '' or '[]' or 'None' or None)
                 subreddit_submissions_df = pd.DataFrame(submissions['data'])
                 subreddit_comments_df = pd.DataFrame(comments['data'])
-                dir_path = f"__data/__posts/{self.category}/{subreddit}"
+                dir_path = f"__data/__posts/{self.category}/{subreddit}/{self.snapshotdate}/ps"
                 if not subreddit_submissions_df.empty:
                     ## Create output directory.
                     os.makedirs(f"{dir_path}", exist_ok=True)
