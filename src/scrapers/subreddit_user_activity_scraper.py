@@ -11,22 +11,22 @@ import requests
 import praw
 
 ## add credentials.py script to .gitignore list to keep personal keys safe. ##
-from credentials import *
+from src.scrapers.credentials import *
 
 class SubredditUserActivityScraper:
     def __init__(self, subreddits, category):
         self.subreddits = subreddits
         self.category = category
 
-        ## Establish Reddit Connection ##
+        ## Establish Reddit Connection
         self.reddit = praw.Reddit(client_id=my_client_id, client_secret=my_client_secret, user_agent=my_user_agent)
-
-        ## Datetime Snapshot ##
+        
+        ## Datetime Snapshot
         self.snapshotdate = datetime.today().strftime('%d-%b-%Y')
         self.snapshotdatetime = datetime.today().strftime('%d-%b-%Y_%H-%M-%S')
 
     def _praw_find_commenters(self, post_limit=1000):
-        ##Iterate over subreddit items in subreddits list.
+        ## Iterate over subreddit items in subreddits list.
         for subreddit in self.subreddits:
             ## Print task initialization message.
             dir_path = f"__data/__users/subreddit_users/{self.category}/{subreddit}/{self.snapshotdate}/praw"
@@ -43,28 +43,28 @@ class SubredditUserActivityScraper:
                 for comment in submission.comments.list():
                     commenters.append(f'{comment.author}')
                 users.append([post.created_utc, created_pst, post.id, post.subreddit, post.url, post.author, commenters])
-            #Write Results to CSV
+            ## Write Results to CSV
             os.makedirs(dir_path, exist_ok=True)
             post_df = pd.DataFrame(users,columns=['created_unix_utc', 'created_datetime_pst','id', 'subreddit', 'url', 'author', 'commenters'])
             post_df.to_csv(f'{dir_path}/{subreddit}_subreddit_newposts_{self.snapshotdatetime}.csv', index=False, sep='\t', encoding='utf-8')  
-            #Isolate Post Submitters and Commenters for Frequency Count
+            ## Isolate Post Submitters and Commenters for Frequency Count
             submitter_list = Counter(list(post_df.author)).most_common()
             commenters_flattened = [item for sublist in list(post_df.commenters) for item in sublist]
             commenters_flattened_no_na = [i for i in commenters_flattened if i == i and i !='' and i !='None']
             commenter_list = Counter(commenters_flattened_no_na).most_common()
-            #Restructure Username Frequency Results as Dictionary
+            ## Restructure Username Frequency Results as Dictionary
             s=dict(submitter_list)
             c=dict(commenter_list)
-            #Create DataFrame with Metadata
+            ## Create DataFrame with Metadata
             commenters_output_df = pd.DataFrame({"query_date": self.snapshotdate, "subreddit": subreddit, "comment_author": c.keys(), "comment_frequency": c.values()})
             submitters_output_df = pd.DataFrame({"query_date": self.snapshotdate, "subreddit": subreddit, "submission_author": s.keys(), "submission_frequency": s.values()})
-            #Write Frequency Results as CSV
+            ## Write Frequency Results as CSV
             commenters_output_df.to_csv(f'{dir_path}/{subreddit}_username_commenters_{self.snapshotdatetime}.csv', index=False, sep='\t', encoding='utf-8')
             submitters_output_df.to_csv(f'{dir_path}/{subreddit}_username_submitters_{self.snapshotdatetime}.csv', index=False, sep='\t', encoding='utf-8')
             time.sleep(5)
 
     def _pushshift_find_commenters(self, api, before_days, post_limit):
-        ##Iterate over subreddit items in subreddits list.
+        ## Iterate over subreddit items in subreddits list.
         for subreddit in self.subreddits: 
             print(f'Gathering users from Subreddit: "{subreddit}"...')
             
@@ -75,16 +75,16 @@ class SubredditUserActivityScraper:
 
             submissions_df = pd.DataFrame(submissions['data'])
             comments_df = pd.DataFrame(comments['data'])
-            #Isolate Post Submitters and Commenters for Frequency Count
+            ## Isolate Post Submitters and Commenters for Frequency Count
             output_submissions_list = Counter(list(submissions_df.author)).most_common()
             output_comments_list = Counter(list(comments_df.author)).most_common()
             #Restructure Username Frequency Results as Dictionary
             s=dict(output_submissions_list)
             c=dict(output_comments_list)
-            #Create DataFrame with Metadata
+            ## Create DataFrame with Metadata
             comment_output_df = pd.DataFrame({"query_date": self.snapshotdate, "before_date": before_days,"subreddit": subreddit, "comment_author": c.keys(), "comment_frequency": c.values()})
             submission_output_df = pd.DataFrame({"query_date": self.snapshotdate, "before_date": before_days,"subreddit": subreddit, "submission_author": s.keys(), "submission_frequency": s.values()})
-            #Write Frequency Results as CSV
+            ## Write Frequency Results in csv format
             os.makedirs(f"{dir_path}", exist_ok=True)
             comment_output_df.to_csv(f'{dir_path}/{subreddit}_subreddit_commenters_{before_days}_{self.snapshotdatetime}.csv', index=False, sep='\t', encoding='utf-8')
             submission_output_df.to_csv(f'{dir_path}/{subreddit}_subreddit_submitters_{before_days}_{self.snapshotdatetime}.csv', index=False, sep='\t', encoding='utf-8')
