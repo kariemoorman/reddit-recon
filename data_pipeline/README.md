@@ -60,4 +60,4 @@ Write that data, in whatever format (e.g., JSON, Parquet, CSV), to local storage
 
 --- 
 
-<p align='center'><b><a href='https://github.com/kariemoorman/reddit-recon/blob/main/LICENSE'>License: AGPL-3.0 v3</a></b></p>
+<p align='center'><b><a href='https://github.com/kariemoorman/reddit-recon/blob/main/LICENSE'>License: AGPL-3.0</a></b></p>
