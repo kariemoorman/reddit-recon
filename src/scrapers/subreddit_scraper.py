@@ -10,14 +10,12 @@ import requests
 import praw
 
 ## add credentials.py script to .gitignore list to keep personal keys safe. ##
-from credentials import *
+from src.scrapers.credentials import *
 
 class SubredditScraper:
-    def __init__(self, subreddits, category, sep='tab', output_format='csv'):
+    def __init__(self, subreddits, category):
         self.subreddits = subreddits
         self.category = category
-        self.sep = sep
-        self.output_format = output_format
 
         ## Establish Reddit Connection ##
         self.reddit = praw.Reddit(client_id=my_client_id, client_secret=my_client_secret, user_agent=my_user_agent)
@@ -28,10 +26,7 @@ class SubredditScraper:
 
     def _praw_subreddit_activity(self, post_type, post_limit):
 
-        if self.sep == 'tab':
-            delimiter = '\t'
-        elif self.sep == 'comma':
-            delimiter = ','
+        post_type = post_type.lower()
 
         ##Iterate over subreddit items in subreddits list.
         for subreddit in self.subreddits:
@@ -59,22 +54,12 @@ class SubredditScraper:
                 ## Transform posts data to pandas DataFrame.
                 posts.append([post.created_utc, created_pst, post.title, post.author, post.score, post.id, post.subreddit, post.url, post.selftext, post.num_comments, comments])
                 post_df = pd.DataFrame(posts, columns=['created_unix_utc', 'created_datetime_pst', 'title', 'author', 'score', 'id', 'subreddit', 'url', 'body', 'num_comments', 'comments'])
-                ## Write DataFrame to output directory based on output format.
-                if self.output_format == 'parquet':
-                    post_df.to_parquet(f'{dir_path}/{subreddit}_subreddit_{post_type}_posts_{self.snapshotdatetime}.parquet', index=False)
-                elif self.output_format == 'json':
-                    post_df.to_json(f'{dir_path}/{subreddit}_subreddit_{post_type}_posts_{self.snapshotdatetime}.json', orient='records')
-                elif self.output_format == 'csv':
-                    post_df.to_csv(f'{dir_path}/{subreddit}_subreddit_{post_type}_posts_{self.snapshotdatetime}.csv', index=False, sep=delimiter)
-                else: 
-                    print('Unsupported file format specified.')
-            time.sleep(40)
+                ## Write DataFrame to output directory in csv format.
+                post_df.to_csv(f'{dir_path}/{subreddit}_subreddit_{post_type}_posts_{self.snapshotdatetime}.csv', index=False, sep='\t')
+
+            time.sleep(30)
 
     def _pushshift_subreddit_activity(self, api, before_days, post_limit):
-        if self.sep == 'tab':
-            delimiter = '\t'
-        elif self.sep == 'comma':
-            delimiter = ','
         ##Iterate over items in subreddits list.
         for subreddit in self.subreddits:
             ## Print task initialization message.
@@ -93,18 +78,9 @@ class SubredditScraper:
             subreddit_comments_df['created_pst'] = comments_created_pst
             submission_created_pst = [datetime.fromtimestamp(item).strftime('%d-%b-%Y %H:%M:%S') for item in subreddit_submissions_df.created_utc]
             subreddit_submissions_df['created_pst'] = submission_created_pst
-            ## Write DataFrames to output directory based on output format.
-            if self.output_format == 'parquet':
-                subreddit_comments_df.to_parquet(f'{dir_path}/{subreddit}_subreddit_comments_{before_days}_{self.snapshotdatetime}.parquet', index=False)
-                subreddit_submissions_df.to_parquet(f'{dir_path}/{subreddit}_subreddit_submissions_{before_days}_{self.snapshotdatetime}.parquet', index=False)
-            elif self.output_format == 'json':
-                subreddit_comments_df.to_json(f'{dir_path}/{subreddit}_subreddit_comments_{before_days}_{self.snapshotdatetime}.json', orient='records')
-                subreddit_submissions_df.to_json(f'{dir_path}/{subreddit}_subreddit_submissions_{before_days}_{self.snapshotdatetime}.json', orient='records')
-            elif self.output_format == 'csv':
-                subreddit_comments_df.to_csv(f'{dir_path}/{subreddit}_subreddit_comments_{before_days}_{self.snapshotdatetime}.csv', index=False, sep=delimiter)
-                subreddit_submissions_df.to_csv(f'{dir_path}/{subreddit}_subreddit_submissions_{before_days}_{self.snapshotdatetime}.csv', index=False, sep=delimiter)
-            else: 
-                print('Unsupported file format specified.')
+            ## Write DataFrames to output directory in csv format.
+            subreddit_comments_df.to_csv(f'{dir_path}/{subreddit}_subreddit_comments_{before_days}_{self.snapshotdatetime}.csv', index=False, sep='\t')
+            subreddit_submissions_df.to_csv(f'{dir_path}/{subreddit}_subreddit_submissions_{before_days}_{self.snapshotdatetime}.csv', index=False, sep='\t')
 
 
     def extract_subreddit_data(self, post_type='new', api='praw', before_days='0d', post_limit=1000):
@@ -125,12 +101,10 @@ def main():
     parser.add_argument("--post_type", "-t", type=str, choices=["hot", "new", "top"], default="new", help="Type of posts to retrieve, for use with Praw API")
     parser.add_argument("--before_days", "-b", type=str, default="0d", help="Number of trailing days (e.g., 10d), for use with Pushshift/Pullpush API")
     parser.add_argument("--post_limit", "-l", type=int, default=1000, help="Number of posts to retrieve (1-1000)")
-    parser.add_argument("--sep", type=str, choices=["tab", "comma"], default="tab", help="Separator for the CSV output")
-    parser.add_argument("--output_format", "-o", type=str, choices=["csv", "parquet", "json"], default="csv", help="Output format (csv, parquet, json)")
 
     args = parser.parse_args()
 
-    scraper = SubredditScraper(args.subreddits, args.category, args.sep, args.output_format)
+    scraper = SubredditScraper(args.subreddits, args.category)
     scraper.extract_subreddit_data(args.post_type, args.api, args.before_days, args.post_limit)
 
 if __name__ == "__main__":
