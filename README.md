@@ -7,7 +7,7 @@
 ### Description
 Reddit-Recon mines Reddit data by subreddit name, keyword, and/or username, and analyzes the contents. Use Reddit-Recon to isolate important and emerging topics, trends, and keywords, monitor user sentiment, and track user activity within and across subreddits. 
 
-Reddit-Recon supports low-cost on-demand and automated workflows at relatively low latency, with data written and stored locally (see [data_pipeline](https://github.com/kariemoorman/reddit-recon/tree/main/data_pipeline)).
+Reddit-Recon supports low-cost, on-demand and automated workflows at relatively low latency (24hr SLA), with data written and stored locally (see [data_pipeline](https://github.com/kariemoorman/reddit-recon/tree/main/data_pipeline)).
 
 ---
 
