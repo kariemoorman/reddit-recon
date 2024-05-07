@@ -83,7 +83,7 @@ def main():
             scraper = RedditUserActivityScraper(post_type=post_type)
             scraper.extract_user_activity(usernames=usernames)
         
-        elif user_input.lower() in ['exit', 'quit']:
+        elif user_input.lower() in ['exit', 'quit', 'q']:
             print(
                 '''\n\n\n  
                        ＧＯＯＤＢＹＥ！       
