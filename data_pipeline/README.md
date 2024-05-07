@@ -28,7 +28,7 @@ For this project, a successful automated data pipeline adheres to the following 
 
 <h2 align='center'>Data Pipeline Design</h2>
 <br>
-<p align='center'><img src="https://github.com/kariemoorman/reddit-recon/blob/main/data_pipeline/images/data_pipelines-reddit_local_pipeline.drawio.png" height="500"/></p>
+<p align='center'><img src="images/data_pipelines-reddit_local_pipeline.drawio.png" height="500"/></p>
 
 
 <table>
