@@ -11,8 +11,10 @@ Reddit-Recon supports low-cost, on-demand and automated workflows at relatively 
 
 ---
 
-### Installation & Use
-
+<details>
+<summary><h3>Installation & Use</h3></summary>
+<br>
+  
 - Clone or download .zip of `reddit-recon` Github repository.
 ```
 git clone https://github.com/kariemoorman/tiktok-analyzer.git
@@ -33,6 +35,8 @@ pip install -r requirements.txt
 ```
 python reddit-recon.py
 ```
+<br>
+</details>
 
 --- 
 
