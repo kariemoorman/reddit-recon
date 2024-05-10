@@ -31,6 +31,26 @@ source .venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
+
+- Create `credentials.py` file.
+
+  - Register for [Reddit Developer account](https://www.reddit.com/prefs/apps/).  
+  - Receive an [Access Token](https://praw.readthedocs.io/en/stable/getting_started/authentication.html).  
+  - Add credentials to `credentials.py` file.  
+
+```
+touch src/scrapers/credentials.py
+
+nano src/scrapers/credentials.py
+
+## Credentials ## 
+my_client_id = 'CLIENT_ID'
+my_client_secret = 'CLIENT_SECRET'
+my_user_agent = 'USER_AGENT'
+my_password = "REDDIT_ACCOUNT_PASSWORD"
+my_username = "REDDIT_ACCOUNT_USERNAME"
+```
+
 - Execute `reddit-recon` program.
 ```
 python reddit-recon.py
