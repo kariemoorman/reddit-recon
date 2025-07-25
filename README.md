@@ -2,8 +2,6 @@
 
 <p align='center'><img src='https://github.com/kariemoorman/reddit-recon/blob/main/reddit-recon.png' alt='rr-png'/></p>
 
-<br>
-
 ### Description
 Reddit-Recon mines Reddit data by subreddit name, keyword, and/or username, and analyzes the contents. 
 
