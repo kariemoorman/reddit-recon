@@ -1,6 +1,6 @@
 # reddit-recon
 
-<p align='center'><img src='https://github.com/kariemoorman/reddit-recon/blob/main/redditrecon.png' alt='rr' width='60%'/></p>
+<p align='center'><img src='https://github.com/kariemoorman/reddit-recon/blob/main/reddit-recon.png' alt='rr-png'/></p>
 
 <br>
 
@@ -54,9 +54,13 @@ my_username = "REDDIT_ACCOUNT_USERNAME"
 ```
 
 - Execute `reddit-recon` program.
+
 ```
 python reddit-recon.py
 ```
+
+<p><img src='https://github.com/kariemoorman/reddit-recon/blob/main/redditrecon.png' alt='rr' width='60%'/></p>
+
 <br>
 </details>
 
